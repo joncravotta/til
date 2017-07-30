@@ -11,10 +11,104 @@ To add new posts, simply add a file in the `_posts` directory that follows the c
 Jekyll also offers powerful support for code snippets:
 
 {% highlight swift %}
-struct Name {
-  var name: String
-  
+import Foundation
+
+struct User {
+    var shownSurvey: Bool
+    var promotion: Bool
+    var onboarding: Bool
 }
+
+let u = User(shownSurvey: false, promotion: false, onboarding: false)
+
+enum EventType {
+    case onboarding
+    case survey
+    case promotion
+
+    var eventName: String {
+        switch self {
+        case .onboarding: return "onboarding"
+        case .promotion: return  "promotion"
+        case .survey: return "survey"
+        }
+    }
+}
+
+
+
+class QueueManager {
+
+    var user: User
+
+    init(user: User) {
+        self.user = user
+        setUpAlerts()
+        curveBall()
+    }
+
+    func curveBall() {
+        sleep(10)
+        queue.append(.onboarding)
+    }
+
+    private var queue:[EventType] = [] {
+        didSet {
+
+            guard !queue.isEmpty else { return }
+
+            handleQueue()
+        }
+    }
+
+    private func setUpAlerts() {
+        var localQueue:[EventType] = []
+        print("setting up")
+        if !user.onboarding{
+            localQueue.append(.onboarding)
+        }
+
+        if !user.promotion {
+            localQueue.append(.promotion)
+        }
+
+        if !user.shownSurvey {
+            localQueue.append(.survey)
+        }
+
+        guard !localQueue.isEmpty else { return }
+        queue.append(contentsOf: localQueue)
+    }
+
+    private func handleQueue() {
+        print("handling queue \(queue)")
+        if let firstEvent = queue.first {
+            performAction(with: firstEvent.eventName, completion: {
+                self.handleCompletedEvent(event: firstEvent)
+                self.queue.remove(at: 0)
+            })
+        }
+    }
+
+    func handleCompletedEvent(event type: EventType) {
+        print("handling completed")
+        print("_________________________________")
+        switch type {
+        case .onboarding: return user.onboarding = true
+        case .promotion: return user.promotion = true
+        case .survey: return user.shownSurvey = true
+        }
+    }
+
+
+    private func performAction(with name: String, completion: @escaping (()->())) {
+        sleep(4)
+        print("action \(name)")
+        completion()
+    }
+}
+
+let q = QueueManager(user: u)
 //print_hi('Tom')
 //=> prints 'Hi, Tom' to STDOUT.
 {% endhighlight %}
