@@ -13,6 +13,7 @@ Jekyll also offers powerful support for code snippets:
 {% highlight swift %}
 struct Name {
   var name: String
+  
 }
 //print_hi('Tom')
 //=> prints 'Hi, Tom' to STDOUT.
