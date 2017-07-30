@@ -11,7 +11,7 @@
 
   <link rel="stylesheet" href="/til/assets/main.css">
   <link rel="canonical" href="http://localhost:4000/til/swift/2017/07/30/welcome-to-jekyll.html">
-  <link rel="alternate" type="application/rss+xml" title="Your awesome title" href="/til/feed.xml">
+  <link rel="alternate" type="application/rss+xml" title="Jon&#39;s TIL" href="/til/feed.xml">
   
   
 </head>
@@ -24,7 +24,7 @@
   <div class="wrapper">
     
     
-    <a class="site-title" href="/til/">Your awesome title</a>
+    <a class="site-title" href="/til/">Jon&#39;s TIL</a>
   
     
       <nav class="site-nav">
@@ -86,10 +86,104 @@
 
 <p>Jekyll also offers powerful support for code snippets:</p>
 
-<figure class="highlight"><pre><code class="language-swift" data-lang="swift"><span class="kd">struct</span> <span class="kt">Name</span> <span class="p">{</span>
-  <span class="k">var</span> <span class="nv">name</span><span class="p">:</span> <span class="kt">String</span>
-  
+<figure class="highlight"><pre><code class="language-swift" data-lang="swift"><span class="kd">import</span> <span class="kt">Foundation</span>
+
+<span class="kd">struct</span> <span class="kt">User</span> <span class="p">{</span>
+    <span class="k">var</span> <span class="nv">shownSurvey</span><span class="p">:</span> <span class="kt">Bool</span>
+    <span class="k">var</span> <span class="nv">promotion</span><span class="p">:</span> <span class="kt">Bool</span>
+    <span class="k">var</span> <span class="nv">onboarding</span><span class="p">:</span> <span class="kt">Bool</span>
 <span class="p">}</span>
+
+<span class="k">let</span> <span class="nv">u</span> <span class="o">=</span> <span class="kt">User</span><span class="p">(</span><span class="nv">shownSurvey</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span> <span class="nv">promotion</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span> <span class="nv">onboarding</span><span class="p">:</span> <span class="kc">false</span><span class="p">)</span>
+
+<span class="kd">enum</span> <span class="kt">EventType</span> <span class="p">{</span>
+    <span class="k">case</span> <span class="n">onboarding</span>
+    <span class="k">case</span> <span class="n">survey</span>
+    <span class="k">case</span> <span class="n">promotion</span>
+
+    <span class="k">var</span> <span class="nv">eventName</span><span class="p">:</span> <span class="kt">String</span> <span class="p">{</span>
+        <span class="k">switch</span> <span class="k">self</span> <span class="p">{</span>
+        <span class="k">case</span> <span class="o">.</span><span class="nv">onboarding</span><span class="p">:</span> <span class="k">return</span> <span class="s">"onboarding"</span>
+        <span class="k">case</span> <span class="o">.</span><span class="nv">promotion</span><span class="p">:</span> <span class="k">return</span>  <span class="s">"promotion"</span>
+        <span class="k">case</span> <span class="o">.</span><span class="nv">survey</span><span class="p">:</span> <span class="k">return</span> <span class="s">"survey"</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+
+
+<span class="kd">class</span> <span class="kt">QueueManager</span> <span class="p">{</span>
+
+    <span class="k">var</span> <span class="nv">user</span><span class="p">:</span> <span class="kt">User</span>
+
+    <span class="nf">init</span><span class="p">(</span><span class="nv">user</span><span class="p">:</span> <span class="kt">User</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">self</span><span class="o">.</span><span class="n">user</span> <span class="o">=</span> <span class="n">user</span>
+        <span class="nf">setUpAlerts</span><span class="p">()</span>
+        <span class="nf">curveBall</span><span class="p">()</span>
+    <span class="p">}</span>
+
+    <span class="kd">func</span> <span class="nf">curveBall</span><span class="p">()</span> <span class="p">{</span>
+        <span class="nf">sleep</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+        <span class="n">queue</span><span class="o">.</span><span class="nf">append</span><span class="p">(</span><span class="o">.</span><span class="n">onboarding</span><span class="p">)</span>
+    <span class="p">}</span>
+
+    <span class="kd">private</span> <span class="k">var</span> <span class="nv">queue</span><span class="p">:[</span><span class="kt">EventType</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span> <span class="p">{</span>
+        <span class="k">didSet</span> <span class="p">{</span>
+
+            <span class="k">guard</span> <span class="o">!</span><span class="n">queue</span><span class="o">.</span><span class="n">isEmpty</span> <span class="k">else</span> <span class="p">{</span> <span class="k">return</span> <span class="p">}</span>
+
+            <span class="nf">handleQueue</span><span class="p">()</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+
+    <span class="kd">private</span> <span class="kd">func</span> <span class="nf">setUpAlerts</span><span class="p">()</span> <span class="p">{</span>
+        <span class="k">var</span> <span class="nv">localQueue</span><span class="p">:[</span><span class="kt">EventType</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="nf">print</span><span class="p">(</span><span class="s">"setting up"</span><span class="p">)</span>
+        <span class="k">if</span> <span class="o">!</span><span class="n">user</span><span class="o">.</span><span class="n">onboarding</span><span class="p">{</span>
+            <span class="n">localQueue</span><span class="o">.</span><span class="nf">append</span><span class="p">(</span><span class="o">.</span><span class="n">onboarding</span><span class="p">)</span>
+        <span class="p">}</span>
+
+        <span class="k">if</span> <span class="o">!</span><span class="n">user</span><span class="o">.</span><span class="n">promotion</span> <span class="p">{</span>
+            <span class="n">localQueue</span><span class="o">.</span><span class="nf">append</span><span class="p">(</span><span class="o">.</span><span class="n">promotion</span><span class="p">)</span>
+        <span class="p">}</span>
+
+        <span class="k">if</span> <span class="o">!</span><span class="n">user</span><span class="o">.</span><span class="n">shownSurvey</span> <span class="p">{</span>
+            <span class="n">localQueue</span><span class="o">.</span><span class="nf">append</span><span class="p">(</span><span class="o">.</span><span class="n">survey</span><span class="p">)</span>
+        <span class="p">}</span>
+
+        <span class="k">guard</span> <span class="o">!</span><span class="n">localQueue</span><span class="o">.</span><span class="n">isEmpty</span> <span class="k">else</span> <span class="p">{</span> <span class="k">return</span> <span class="p">}</span>
+        <span class="n">queue</span><span class="o">.</span><span class="nf">append</span><span class="p">(</span><span class="nv">contentsOf</span><span class="p">:</span> <span class="n">localQueue</span><span class="p">)</span>
+    <span class="p">}</span>
+
+    <span class="kd">private</span> <span class="kd">func</span> <span class="nf">handleQueue</span><span class="p">()</span> <span class="p">{</span>
+        <span class="nf">print</span><span class="p">(</span><span class="s">"handling queue </span><span class="se">\(</span><span class="n">queue</span><span class="se">)</span><span class="s">"</span><span class="p">)</span>
+        <span class="k">if</span> <span class="k">let</span> <span class="nv">firstEvent</span> <span class="o">=</span> <span class="n">queue</span><span class="o">.</span><span class="n">first</span> <span class="p">{</span>
+            <span class="nf">performAction</span><span class="p">(</span><span class="nv">with</span><span class="p">:</span> <span class="n">firstEvent</span><span class="o">.</span><span class="n">eventName</span><span class="p">,</span> <span class="nv">completion</span><span class="p">:</span> <span class="p">{</span>
+                <span class="k">self</span><span class="o">.</span><span class="nf">handleCompletedEvent</span><span class="p">(</span><span class="nv">event</span><span class="p">:</span> <span class="n">firstEvent</span><span class="p">)</span>
+                <span class="k">self</span><span class="o">.</span><span class="n">queue</span><span class="o">.</span><span class="nf">remove</span><span class="p">(</span><span class="nv">at</span><span class="p">:</span> <span class="mi">0</span><span class="p">)</span>
+            <span class="p">})</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+
+    <span class="kd">func</span> <span class="nf">handleCompletedEvent</span><span class="p">(</span><span class="n">event</span> <span class="nv">type</span><span class="p">:</span> <span class="kt">EventType</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nf">print</span><span class="p">(</span><span class="s">"handling completed"</span><span class="p">)</span>
+        <span class="nf">print</span><span class="p">(</span><span class="s">"_________________________________"</span><span class="p">)</span>
+        <span class="k">switch</span> <span class="n">type</span> <span class="p">{</span>
+        <span class="k">case</span> <span class="o">.</span><span class="nv">onboarding</span><span class="p">:</span> <span class="k">return</span> <span class="n">user</span><span class="o">.</span><span class="n">onboarding</span> <span class="o">=</span> <span class="kc">true</span>
+        <span class="k">case</span> <span class="o">.</span><span class="nv">promotion</span><span class="p">:</span> <span class="k">return</span> <span class="n">user</span><span class="o">.</span><span class="n">promotion</span> <span class="o">=</span> <span class="kc">true</span>
+        <span class="k">case</span> <span class="o">.</span><span class="nv">survey</span><span class="p">:</span> <span class="k">return</span> <span class="n">user</span><span class="o">.</span><span class="n">shownSurvey</span> <span class="o">=</span> <span class="kc">true</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+
+
+    <span class="kd">private</span> <span class="kd">func</span> <span class="nf">performAction</span><span class="p">(</span><span class="n">with</span> <span class="nv">name</span><span class="p">:</span> <span class="kt">String</span><span class="p">,</span> <span class="nv">completion</span><span class="p">:</span> <span class="kd">@escaping</span> <span class="p">(()</span><span class="o">-&gt;</span><span class="p">()))</span> <span class="p">{</span>
+        <span class="nf">sleep</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
+        <span class="nf">print</span><span class="p">(</span><span class="s">"action </span><span class="se">\(</span><span class="n">name</span><span class="se">)</span><span class="s">"</span><span class="p">)</span>
+        <span class="nf">completion</span><span class="p">()</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="k">let</span> <span class="nv">q</span> <span class="o">=</span> <span class="kt">QueueManager</span><span class="p">(</span><span class="nv">user</span><span class="p">:</span> <span class="n">u</span><span class="p">)</span>
 <span class="c1">//print_hi('Tom')</span>
 <span class="c1">//=&gt; prints 'Hi, Tom' to STDOUT.</span></code></pre></figure>
 
@@ -108,14 +202,14 @@
 
   <div class="wrapper">
 
-    <h2 class="footer-heading">Your awesome title</h2>
+    <h2 class="footer-heading">Jon&#39;s TIL</h2>
 
     <div class="footer-col-wrapper">
       <div class="footer-col footer-col-1">
         <ul class="contact-list">
           <li>
             
-              Your awesome title
+              Jon&#39;s TIL
             
             </li>
             
