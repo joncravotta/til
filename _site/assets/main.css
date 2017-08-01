@@ -60,7 +60,8 @@ li > ol {
  * Headings
  */
 h1, h2, h3, h4, h5, h6 {
-  font-weight: 400; }
+  font-family: 'Poppins', sans-serif;
+  font-weight: 600; }
 
 /**
  * Links
@@ -68,8 +69,6 @@ h1, h2, h3, h4, h5, h6 {
 a {
   color: #698ad2;
   text-decoration: none; }
-  a:visited {
-    color: #2b4b90; }
   a:hover {
     color: #2b4b90;
     text-decoration: underline; }
@@ -290,6 +289,8 @@ pre {
   list-style: none; }
   .post-list > li {
     margin-bottom: 30px; }
+  .post-list a {
+    color: #698ad2; }
 
 .post-meta {
   font-size: 14px;
@@ -308,7 +309,10 @@ pre {
 .post-title {
   font-size: 42px;
   letter-spacing: -1px;
-  line-height: 1; }
+  line-height: 1;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 600;
+  color: #698ad2; }
   @media screen and (max-width: 800px) {
     .post-title {
       font-size: 36px; } }

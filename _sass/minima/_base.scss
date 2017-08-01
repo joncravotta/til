@@ -82,7 +82,8 @@ li {
  * Headings
  */
 h1, h2, h3, h4, h5, h6 {
-  font-weight: $base-font-weight;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 600;
 }
 
 
@@ -93,10 +94,6 @@ h1, h2, h3, h4, h5, h6 {
 a {
   color: $brand-color;
   text-decoration: none;
-
-  &:visited {
-    color: darken($brand-color, 25%);
-  }
 
   &:hover {
     color: darken($brand-color, 25%);

@@ -193,6 +193,10 @@
   > li {
     margin-bottom: $spacing-unit;
   }
+
+  a {
+    color: $brand-color;
+  }
 }
 
 .post-meta {
@@ -218,6 +222,9 @@
   @include relative-font-size(2.625);
   letter-spacing: -1px;
   line-height: 1;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 600;
+  color: $brand-color;
 
   @include media-query($on-laptop) {
     @include relative-font-size(2.25);
