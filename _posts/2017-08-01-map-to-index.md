@@ -13,7 +13,7 @@ Here was my first iteration for getting the first 3 ids from an array of product
 {% highlight swift %}
 let ids:[String] = []
 
-for i in 0...3 {
+for i in 0..<3 {
     ids.append(products[i].ids)
 }
 {% endhighlight %}
@@ -21,5 +21,9 @@ for i in 0...3 {
 As you can see this is not swifty at all!  The swiftier way is to use a map like this:
 
 {% highlight swift %}
-let ids:[String] = products[0...3].map({$0.id})
+let ids:[String] = products[0..<3].map({$0.id})
 {% endhighlight %}
+
+You can limit the sizes of the array by accessing with [0..<3].
+
+That will contain the array to 3 indexes, and then we just map over those to get the ids.
