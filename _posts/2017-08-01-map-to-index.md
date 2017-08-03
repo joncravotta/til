@@ -2,7 +2,7 @@
 layout: post
 title:  "Mapping until index"
 date:   2017-08-01 19:06:12 -0400
-categories: swift
+categories: Swift
 ---
 ### Fun with maps
 

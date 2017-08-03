@@ -2,7 +2,7 @@
 layout: post
 title:  "Generic network reponse"
 date:   2017-08-02 19:06:12 -0400
-categories: swift
+categories: Swift
 ---
 
 ### Using generics for network responses

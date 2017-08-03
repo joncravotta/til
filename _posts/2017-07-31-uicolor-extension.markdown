@@ -2,7 +2,7 @@
 layout: post
 title:  "UIColor extension"
 date:   2017-07-31 19:06:12 -0400
-categories: swift
+categories: Swift
 ---
 ### How I extend UIColor
 
