@@ -67,10 +67,10 @@ h1, h2, h3, h4, h5, h6 {
  * Links
  */
 a {
-  color: #698ad2;
+  color: #11cfd2;
   text-decoration: none; }
   a:hover {
-    color: #2b4b90;
+    color: #075b5c;
     text-decoration: underline; }
   .social-media-list a:hover {
     text-decoration: none; }
@@ -290,7 +290,7 @@ pre {
   .post-list > li {
     margin-bottom: 30px; }
   .post-list a {
-    color: #698ad2; }
+    color: #11cfd2; }
 
 .post-meta {
   font-size: 14px;
@@ -312,7 +312,7 @@ pre {
   line-height: 1;
   font-family: 'Poppins', sans-serif;
   font-weight: 600;
-  color: #698ad2; }
+  color: #11cfd2; }
   @media screen and (max-width: 800px) {
     .post-title {
       font-size: 36px; } }
