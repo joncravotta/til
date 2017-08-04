@@ -1,9 +1,10 @@
 ---
 layout: post
 title:  "Go lang scraper: part one"
-date:   2017-08-04 19:06:12 -0400
+date:   2017-08-04 02:06:12 -0400
 categories: Go
 ---
+
 ### Building a Fantasy Football API
 
 The past moth i've been playing around with [Go](https://golang.org/).  According to their homepage:
