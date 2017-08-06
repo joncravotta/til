@@ -1,5 +1,36 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.4.5">Jekyll</generator><link href="http://localhost:4000/til/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/til/" rel="alternate" type="text/html" /><updated>2017-08-06T10:21:36-04:00</updated><id>http://localhost:4000/til/</id><title type="html">Jon’s TIL</title><subtitle>Jon Cravotta's TIL.  Software engineer @RentTheRunway. Living in NYC.
-</subtitle><entry><title type="html">Go lang scraper: part one</title><link href="http://localhost:4000/til/go/2017/08/04/go-part-one.html" rel="alternate" type="text/html" title="Go lang scraper: part one" /><published>2017-08-04T02:06:12-04:00</published><updated>2017-08-04T02:06:12-04:00</updated><id>http://localhost:4000/til/go/2017/08/04/go-part-one</id><content type="html" xml:base="http://localhost:4000/til/go/2017/08/04/go-part-one.html">&lt;h3 id=&quot;building-a-fantasy-football-api&quot;&gt;Building a Fantasy Football API&lt;/h3&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.4.5">Jekyll</generator><link href="http://localhost:4000/til/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/til/" rel="alternate" type="text/html" /><updated>2017-08-06T15:16:16-04:00</updated><id>http://localhost:4000/til/</id><title type="html">Jon’s TIL</title><subtitle>Jon Cravotta's TIL.  Software engineer @RentTheRunway. Living in NYC.
+</subtitle><entry><title type="html">Go lang scraper: part two</title><link href="http://localhost:4000/til/go/2017/08/06/go-part-two.html" rel="alternate" type="text/html" title="Go lang scraper: part two" /><published>2017-08-06T02:06:12-04:00</published><updated>2017-08-06T02:06:12-04:00</updated><id>http://localhost:4000/til/go/2017/08/06/go-part-two</id><content type="html" xml:base="http://localhost:4000/til/go/2017/08/06/go-part-two.html">&lt;h3 id=&quot;parsing-html&quot;&gt;Parsing html&lt;/h3&gt;
+
+&lt;p&gt;In our second installment of building a Fantasy Football api we will be learning how to parse the html of our request.&lt;/p&gt;
+
+&lt;p&gt;In our first post we learned how to make a network request using go.  We will continue off that.&lt;/p&gt;
+
+&lt;p&gt;You can use go’s built in libraries to parse html but I found it easier to use &lt;a href=&quot;https://github.com/PuerkitoBio/goquery&quot;&gt;goquery&lt;/a&gt;. It is very similar to nokogiri in ruby or beautiful soup in python.  It helps parsing html by utilizing css selectors, html tags etc. To install run this in your command line:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-markdown&quot; data-lang=&quot;markdown&quot;&gt;go get github.com/PuerkitoBio/goquery&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Then in your main.go file add it to your list of imports:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-markdown&quot; data-lang=&quot;markdown&quot;&gt;import (
+	&quot;github.com/PuerkitoBio/goquery&quot;
+  ...
+)&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Instead of using the net/http library to make our request we will use goquery.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-go&quot; data-lang=&quot;go&quot;&gt;&lt;span class=&quot;k&quot;&gt;func&lt;/span&gt;&lt;span class=&quot;x&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;makeRequest&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;&lt;span class=&quot;x&quot;&gt; &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;x&quot;&gt;
+  &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;document&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;x&quot;&gt; &lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;error&lt;/span&gt;&lt;span class=&quot;x&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:=&lt;/span&gt;&lt;span class=&quot;x&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;goquery&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;NewDocument&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;http://fftoday.com/stats/playerstats.php?Season=2016&amp;amp;GameWeek=&amp;amp;PosID=10&amp;amp;LeagueID=26955&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;x&quot;&gt;
+
+  &lt;/span&gt;&lt;span class=&quot;k&quot;&gt;if&lt;/span&gt;&lt;span class=&quot;x&quot;&gt; &lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;error&lt;/span&gt;&lt;span class=&quot;x&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;!=&lt;/span&gt;&lt;span class=&quot;x&quot;&gt; &lt;/span&gt;&lt;span class=&quot;no&quot;&gt;nil&lt;/span&gt;&lt;span class=&quot;x&quot;&gt; &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;x&quot;&gt;
+    &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;println&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;error!&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;x&quot;&gt;
+  &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;x&quot;&gt;
+&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;This will return use a document object, with this we can begin to parse our html.&lt;/p&gt;
+
+&lt;p&gt;To parse the html we need to know the structure of it, we can check this out by using your browser inspector.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;http://localhost:4000/images/go_html_inspect.png&quot; alt=&quot;My helpful screenshot&quot; /&gt;&lt;/p&gt;</content><author><name></name></author><summary type="html">Parsing html</summary></entry><entry><title type="html">Go lang scraper: part one</title><link href="http://localhost:4000/til/go/2017/08/04/go-part-one.html" rel="alternate" type="text/html" title="Go lang scraper: part one" /><published>2017-08-04T02:06:12-04:00</published><updated>2017-08-04T02:06:12-04:00</updated><id>http://localhost:4000/til/go/2017/08/04/go-part-one</id><content type="html" xml:base="http://localhost:4000/til/go/2017/08/04/go-part-one.html">&lt;h3 id=&quot;building-a-fantasy-football-api&quot;&gt;Building a Fantasy Football API&lt;/h3&gt;
 
 &lt;p&gt;The past moth i’ve been playing around with &lt;a href=&quot;https://golang.org/&quot;&gt;Go&lt;/a&gt;.  According to their homepage:&lt;/p&gt;
 
