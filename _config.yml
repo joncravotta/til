@@ -17,8 +17,8 @@ title: Jon's TIL
 email: joncravotta32@gmail.com
 description: > # this means to ignore newlines until "baseurl:"
   Jon Cravotta's TIL.  Software engineer @RentTheRunway. Living in NYC.
-baseurl: "/til" # the subpath of your site, e.g. /blog
-url: "https://joncravotta.github.io" # the base hostname & protocol for your site, e.g. http://example.com
+baseurl: /til # the subpath of your site, e.g. /blog
+url: https://joncravotta.github.io # the base hostname & protocol for your site, e.g. http://example.com
 twitter_username: JonCravotta
 github_username:  joncravotta
 
