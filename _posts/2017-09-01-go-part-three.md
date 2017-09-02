@@ -1,7 +1,7 @@
 ---
 layout: post
 title:  "Go lang scraper: part three"
-date:   2017-09-01 02:06:12 -0400
+date:   2017-09-01 02:07:12 -0200
 categories: Go
 ---
 
