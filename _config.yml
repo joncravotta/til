@@ -23,6 +23,7 @@ twitter_username: JonCravotta
 github_username:  joncravotta
 
 # Build settings
+future: true
 markdown: kramdown
 theme: minima
 plugins_dir:
