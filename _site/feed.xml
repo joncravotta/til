@@ -1,5 +1,76 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.5.2">Jekyll</generator><link href="http://localhost:4000/til/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/til/" rel="alternate" type="text/html" /><updated>2017-09-02T09:22:45-04:00</updated><id>http://localhost:4000/til/</id><title type="html">Jon’s TIL</title><subtitle>Jon Cravotta's TIL.  Software engineer @RentTheRunway. Living in NYC.
-</subtitle><entry><title type="html">Go lang scraper: part three</title><link href="http://localhost:4000/til/go/2017/09/01/go-part-three.html" rel="alternate" type="text/html" title="Go lang scraper: part three" /><published>2017-09-01T00:07:12-04:00</published><updated>2017-09-01T00:07:12-04:00</updated><id>http://localhost:4000/til/go/2017/09/01/go-part-three</id><content type="html" xml:base="http://localhost:4000/til/go/2017/09/01/go-part-three.html">&lt;h3 id=&quot;setting-up-routers&quot;&gt;Setting up routers&lt;/h3&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.5.2">Jekyll</generator><link href="http://localhost:4000/til/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/til/" rel="alternate" type="text/html" /><updated>2017-10-01T21:56:23-04:00</updated><id>http://localhost:4000/til/</id><title type="html">Jon’s TIL</title><subtitle>Jon Cravotta's TIL.  Software engineer @RentTheRunway. Living in NYC.
+</subtitle><entry><title type="html">Sinatra and Dalli</title><link href="http://localhost:4000/til/ruby/2017/10/01/sinatra-and-dalli.html" rel="alternate" type="text/html" title="Sinatra and Dalli" /><published>2017-10-01T02:06:12-04:00</published><updated>2017-10-01T02:06:12-04:00</updated><id>http://localhost:4000/til/ruby/2017/10/01/sinatra-and-dalli</id><content type="html" xml:base="http://localhost:4000/til/ruby/2017/10/01/sinatra-and-dalli.html">&lt;h2 id=&quot;how-to-setup-cacheing-with-dalli-and-sinatra&quot;&gt;How to setup cacheing with Dalli and Sinatra&lt;/h2&gt;
+&lt;p&gt;My go to tool for creating micro web api is &lt;a href=&quot;https://www.google.com&quot;&gt;Sinatra&lt;/a&gt;.  It’s a great, easy to use little framework that helps me build apis quick.  I find myself using it as a middle layer between other apis and my apps, so a common thing I need to do is set up a cache.   My go to library for cacheing is &lt;a href=&quot;https://github.com/petergoldstein/dalli&quot;&gt;Dalli&lt;/a&gt;.  According to its github:&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;Dalli is a high performance pure Ruby client for accessing memcached servers. It works with memcached 1.4+ only as it uses the newer binary protocol. It should be considered a replacement for the memcache-client gem.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;So lets get started and see how it can I incorporate it into a sinatra project.&lt;/p&gt;
+
+&lt;p&gt;i.e. you have to &lt;a href=&quot;https://gist.github.com/tomysmile/ba6c0ba4488ea51e6423d492985a7953&quot;&gt;install and run &lt;/a&gt;  memcache for Dalli to work.&lt;/p&gt;
+
+&lt;p&gt;I like creating an app controller that holds important functionality so other controllers can subclass.  I’ll start off by setting up the cache itself.&lt;/p&gt;
+
+&lt;div class=&quot;language-ruby highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;AppController&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Sinatra&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Base&lt;/span&gt;
+	&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;initialize&lt;/span&gt;
+  		&lt;span class=&quot;vi&quot;&gt;@cache&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;setup_memcache&lt;/span&gt;
+		&lt;span class=&quot;k&quot;&gt;super&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+
+	&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;setup_memcache&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;options&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:namespace&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;app_v1&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:compress&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;kp&quot;&gt;true&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+    &lt;span class=&quot;no&quot;&gt;Dalli&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Client&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;new&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'localhost:11211'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;options&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;I create an options hash with a namespace and the option of compressing.  By setting compress to true Dalli will gzip-compress values larger than 1K.  I create the client and pass in the options.&lt;/p&gt;
+
+&lt;p&gt;After the setup we will now implement methods to get a cache and set a cache:&lt;/p&gt;
+
+&lt;div class=&quot;language-ruby highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;cached?&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;key&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+	&lt;span class=&quot;n&quot;&gt;get_cache&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;key&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;set_cache&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;key&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;value&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;time&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+	&lt;span class=&quot;vi&quot;&gt;@cache&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;set&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;key&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;value&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;time&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+
+&lt;span class=&quot;kp&quot;&gt;private&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;get_cache&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;key&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+	&lt;span class=&quot;vi&quot;&gt;@cache&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;get&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;key&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;cached?&lt;/code&gt; will retrieve the cache via a key.  &lt;code class=&quot;highlighter-rouge&quot;&gt;set_cache&lt;/code&gt; will set a cache with a key, value and time which is set in seconds.&lt;/p&gt;
+
+&lt;p&gt;We can then create a new controller that subclasses &lt;code class=&quot;highlighter-rouge&quot;&gt;AppController&lt;/code&gt;&lt;/p&gt;
+
+&lt;div class=&quot;language-ruby highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;TestController&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;AppController&lt;/span&gt;
+  &lt;span class=&quot;no&quot;&gt;TEST_CACHE_KEY&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;test_key_01&quot;&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;initialize&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;super&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+
+  &lt;span class=&quot;n&quot;&gt;get&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;/set_cache&quot;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;set_cache&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;TEST_CACHE_KEY&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;Hello, i'm cached&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;60&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+
+  &lt;span class=&quot;n&quot;&gt;get&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;/get_cache&quot;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;cache&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;cached?&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;TEST_CACHE_KEY&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;cache&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;?&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;cache&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;CACHE FAILED&quot;&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;We then could test this out by calling &lt;code class=&quot;highlighter-rouge&quot;&gt;http://YOUR_PATH/set_cache&lt;/code&gt; to set our cache.  After the cache is set we can call &lt;code class=&quot;highlighter-rouge&quot;&gt;http://YOUR_PATH/get_cache&lt;/code&gt;, you should see &lt;code class=&quot;highlighter-rouge&quot;&gt;&quot;Hello, i'm cached&quot;&lt;/code&gt; returned!&lt;/p&gt;
+
+&lt;p&gt;Now that we set this up locally I’m going to show you how we can get this set up on a live server using &lt;a href=&quot;https://www.heroku.com/&quot;&gt;heroku&lt;/a&gt;&lt;/p&gt;</content><author><name></name></author><summary type="html">How to setup cacheing with Dalli and Sinatra My go to tool for creating micro web api is Sinatra. It’s a great, easy to use little framework that helps me build apis quick. I find myself using it as a middle layer between other apis and my apps, so a common thing I need to do is set up a cache. My go to library for cacheing is Dalli. According to its github:</summary></entry><entry><title type="html">Go lang scraper: part three</title><link href="http://localhost:4000/til/go/2017/09/01/go-part-three.html" rel="alternate" type="text/html" title="Go lang scraper: part three" /><published>2017-09-01T00:07:12-04:00</published><updated>2017-09-01T00:07:12-04:00</updated><id>http://localhost:4000/til/go/2017/09/01/go-part-three</id><content type="html" xml:base="http://localhost:4000/til/go/2017/09/01/go-part-three.html">&lt;h3 id=&quot;setting-up-routers&quot;&gt;Setting up routers&lt;/h3&gt;
 
 &lt;p&gt;In our third installment of building a fantasy football api we will be setting up routers for our api to return data.&lt;/p&gt;
 
